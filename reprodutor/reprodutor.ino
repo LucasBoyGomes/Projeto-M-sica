@@ -443,3 +443,196 @@ const int Banana_merry_christmas_notas[] PROGMEM = {
   NOTE_D5,4, NOTE_G5,4, NOTE_E5,4,
   NOTE_F5,2, REST,4
 };
+
+// --- LEDs ---
+void ligarLedReproduzindo() {
+  digitalWrite(LED1, HIGH);   // verde
+  digitalWrite(LED2, LOW);
+}
+void ligarLedPausado() {
+  digitalWrite(LED1, LOW);
+  digitalWrite(LED2, HIGH);   // vermelho
+}
+void desligarLeds() {
+  digitalWrite(LED1, LOW);
+  digitalWrite(LED2, LOW);
+}
+
+void setup() {
+  lcd.begin(16, 2);   // 16 colunas, 2 linhas
+  lcd.setCursor(0,0);
+  lcd.print(F("Ola Sr. Banana"));
+  lcd.setCursor(0,1);
+  lcd.print(F("Loading..."));
+  delay(2000);
+  pinMode(LED1, OUTPUT);
+  pinMode(LED2, OUTPUT);
+  pinMode(botao1, INPUT_PULLUP);
+  pinMode(botao2, INPUT_PULLUP);
+  pinMode(botao3, INPUT_PULLUP);
+  pinMode(botao4, INPUT_PULLUP);
+  pinMode(Piezo, OUTPUT); //colocando entradas e saidas
+  desligarLeds();
+  Atualizar_banana_menu();
+}
+void loop() {
+    // Botão 1: decrementa menu
+    if (digitalRead(botao1) == LOW) { // LOW significa pressionado (pull-up)
+        if (azul_estado == 0) {
+            banana_menu--;
+            if (banana_menu < 0) {
+                banana_menu = 7; // volta para o último item
+            }
+            Atualizar_banana_menu(); // função para atualizar display/menu
+            delay(300); // debounce simples
+        }
+    }
+
+    // Botão 2: incrementa menu
+    if (digitalRead(botao2) == LOW) {
+        if (azul_estado == 0) {
+            banana_menu++;
+            if (banana_menu > 7) {
+                banana_menu = 7; // evita ultrapassar o limite
+                banana_menu = 0;
+            }
+            Atualizar_banana_menu();
+            delay(300);
+        }
+    }
+
+    // Botão 3: controla estado azul
+    if (digitalRead(botao3) == LOW) {
+        if (azul_estado == 0) {
+            azul_estado = 1;
+            Nota_atual = 0;
+            Reproduzindo(); // inicia reprodução
+            delay(300);
+        }
+      else if(azul_estado == 1) {
+            azul_estado = 2;
+            noTone(Piezo); // para reprodução
+            Pausado();
+            delay(300);
+        }
+      else if(azul_estado == 2){
+        azul_estado = 1;
+        Reproduzindo();
+        delay(300);
+      }
+    }
+   if(digitalRead(botao4) == LOW) {
+     azul_estado = 0;
+     noTone(Piezo);
+     Nota_atual = 0;
+     desligarLeds();
+     Atualizar_banana_menu();
+     delay(300);
+   }
+  if(azul_estado == 1){
+    Iniciando_Musica();
+  }
+}
+   void Atualizar_banana_menu(){
+     lcd.clear();
+     lcd.setCursor(0,0);
+     lcd.print("->");
+     lcd.print(banana_musica[banana_menu]);
+     lcd.setCursor(3,1);
+     int Adiante = (banana_menu+1)%8;
+     lcd.print(banana_musica[Adiante]);
+   }
+     void Reproduzindo(){
+       lcd.clear();
+       lcd.setCursor(0,0);
+       lcd.print("Reproduzindo");
+       lcd.setCursor(0,1);
+       lcd.print(banana_musica[banana_menu]);
+       temp_banana = 0; // a próxima nota toca na hora
+       ligarLedReproduzindo();
+   }
+      void Pausado(){
+        lcd.clear();
+        lcd.setCursor(0,0);
+        lcd.print("Parado");
+        lcd.setCursor(0,1);
+        lcd.print(banana_musica[banana_menu]);
+        ligarLedPausado();
+   }
+      void Iniciando_Musica(){
+        const int *notas;   // vetor da música escolhida
+        int passo = 2;      // 2 = (nota, duração); 1 = só notas
+        switch(banana_menu){
+          case 0:
+          notas = Banana_wars_notas;
+          banana_notas = sizeof(Banana_wars_notas)/sizeof(Banana_wars_notas[0]);
+          break;
+          case 1:
+          notas = Banana_zelda_notas;
+          banana_notas = sizeof(Banana_zelda_notas)/sizeof(Banana_zelda_notas[0]);
+          break;
+          case 2:
+          notas = Banana_Starttrek_notas;
+          banana_notas = sizeof(Banana_Starttrek_notas)/sizeof(Banana_Starttrek_notas[0]);
+          break;
+          case 3:
+          notas = Banana_Harry_Potter_notas;
+          banana_notas = sizeof(Banana_Harry_Potter_notas)/sizeof(Banana_Harry_Potter_notas[0]);
+          break;
+          case 4:
+          notas = Banana_Game_of_thrones_notas;
+          banana_notas = sizeof(Banana_Game_of_thrones_notas)/sizeof(Banana_Game_of_thrones_notas[0]);
+          break;
+          case 5:
+          notas = Banana_Doom_notas;
+          banana_notas = sizeof(Banana_Doom_notas)/sizeof(Banana_Doom_notas[0]);
+          break;
+          case 6:
+          notas = Corinthians_notas;
+          banana_notas = sizeof(Corinthians_notas)/sizeof(Corinthians_notas[0]);
+          passo = 1;        // Corinthians não tem durações
+          break;
+          case 7:
+          notas = Banana_merry_christmas_notas;
+          banana_notas = sizeof(Banana_merry_christmas_notas)/sizeof(Banana_merry_christmas_notas[0]);
+          break;
+          default:
+          return;
+        }
+
+        // acabou a música: volta ao estado inerte
+        if(Nota_atual >= banana_notas){
+          azul_estado = 0;
+          noTone(Piezo);
+          Nota_atual = 0;
+          desligarLeds();
+          Atualizar_banana_menu();
+          return;
+        }
+
+        // chegou a hora da próxima nota (millis não trava os botões)
+        if(millis() >= temp_banana){
+          tempo = map(analogRead(Potenciometro), 0, 1023, 60, 200);
+          int frequencia = (int)pgm_read_word(notas + Nota_atual);
+          long duracao;
+          if(passo == 2){
+            int divisor = (int)pgm_read_word(notas + Nota_atual + 1);
+            long semibreve = (60000L * 4) / tempo;
+            if(divisor > 0){
+              duracao = semibreve / divisor;
+            } else {
+              duracao = (semibreve / (-divisor)) * 1.5; // nota pontuada
+            }
+          } else {
+            duracao = 250;
+          }
+          if(frequencia > 0){
+            tone(Piezo, frequencia, duracao * 0.9);
+          } else {
+            noTone(Piezo); // pausa
+          }
+          temp_banana = millis() + duracao;
+               Nota_atual += passo;
+        }
+      }
+
