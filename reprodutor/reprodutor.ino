@@ -1,3 +1,17 @@
+#include <LiquidCrystal.h>
+#include <avr/pgmspace.h>
+LiquidCrystal lcd(7, 6, 5, 4, 3, 2); // RS, E, DB4, DB5, DB6, DB7
+#define Potenciometro A0
+#define botao1 9
+#define botao2 10
+#define botao3 11
+#define botao4 12
+#define LED1 A1   // verde
+#define LED2 13   // vermelho
+#define Piezo 8
+#define REST 0
+#define NO_SOUND 0
+ 
 //notas
 // --- 2.ª OITAVA (usada pela Doom) ---
 #define NOTE_C2  65
@@ -69,6 +83,13 @@
 #define NOTE_AS6 1865
 #define NOTE_B6  1976
 
+int banana_menu = 0; //para inciar da 1 primeira musica do menu
+int azul_estado = 0;//para iniciar do 1 estado ou sejapara começar inerte
+int Nota_atual=0;// para comerçar da 1 nota
+unsigned long temp_banana =0;// long tempo fsz a contagem de tempo e o temp_banan indica para começar do inicio
+int banana_notas = 0;//conta quantas notas tem (atualizado dentro de Iniciando_Musica)
+int tempo = 108;//tempo total comum
+const char* banana_musica[8] = {"Star wars","Zelda"," Star trek","Harry Potter","Game of thrones","Doom","Corinthians","merry christmas"};
 
 // Star Wars
 const int Banana_wars_notas[] PROGMEM = {
