@@ -5,7 +5,8 @@ Projeto da disciplina **CCP020 - Digital Experience Ultimate**, do Centro Univer
 **Grupo:**
 - Samuel - RA 52.126.003-4
 - Lucas - RA 52.126.005-9
-- John - RA  52.126.027-3
+- John - RA 52.126.027-3
+
 
 
 ## 1. Introdução
@@ -17,6 +18,7 @@ Nossos objetivos eram:
 - mostrar a lista de músicas em um display LCD, com uma setinha (`->`) indicando qual está selecionada;
 - usar botões como controles para navegar pelo menu, tocar e parar a música;
 - usar os LEDs para mostrar rapidamente se o reprodutor está tocando ou parado.
+
 
 
 ## 2. Metodologia
@@ -43,7 +45,7 @@ Antes de mexer nos componentes de verdade, montamos todo o circuito no **Tinkerc
 
 Na programação, cada música virou uma lista de notas e quanto tempo cada nota dura. O Arduino percorre essa lista e toca nota por nota no buzzer usando a função `tone()`. O LCD mostra duas músicas por vez, e a setinha `->` marca a que está selecionada.
 
-Depois disso foi uma fase grande de testes: acertar o tempo das notas para a música ficar reconhecível, arrumar o contraste do display e conferir q;ue os botões respondessem direito.
+Depois disso foi uma fase grande de testes: acertar o tempo das notas para a música ficar reconhecível, arrumar o contraste do display e conferir que os botões respondessem direito.
 
 **Projeto montado (Tinkercad):**
 
@@ -64,11 +66,12 @@ Depois disso foi uma fase grande de testes: acertar o tempo das notas para a mú
 | LED verde | D13 |
 | LED vermelho | A0 |
 
+
 ## 3. Experimentos
 
 No vídeo dá para ver o reprodutor funcionando do começo ao fim. A sequência é esta:
 
-1. **Menu inicial:** quando iniciammos o Arduino, o display já mostra a lista de músicas, com a setinha `->` na primeira opção.
+1. **Menu inicial:** quando iniciamos o Arduino, o display já mostra a lista de músicas, com a setinha `->` na primeira opção.
 2. **Navegando pelo menu:** usando os botões, dá para subir e descer na lista. O display mostra duas músicas por vez, e a setinha acompanha a seleção.
 3. **Tocando uma música:** quando escolhemos uma música, o display muda para "Reproduzindo" com o nome dela, o LED verde acende e a melodia começa a tocar no buzzer.
 4. **Parando a música:** ao parar, o display mostra "Parado" junto com o nome da música, e o LED vermelho indica que nada está tocando.
@@ -77,7 +80,9 @@ As músicas que colocamos foram: **Doom, Corinthians, Star Wars, Zelda, Star Tre
 
 ### Vídeo
 
-[![Assistir ao vídeo](https://youtu.be/b4Jwq2KSv70)
+https://youtu.be/b4Jwq2KSv70
+
+
 
 ## 4. Tecnologias utilizadas
 
@@ -88,6 +93,9 @@ As músicas que colocamos foram: **Doom, Corinthians, Star Wars, Zelda, Star Tre
 - **Função `tone()`**, para gerar as notas no buzzer
 - **Tinkercad**, para simular o circuito antes de montar
 - **Git e GitHub**, para organizar e entregar o projeto
+- **Inteligência artificial**, para pesquisar as notas (blocos musicais) das músicas e para ajudar na estilização do README no GitHub
+
+
 
 ## 5. Conclusão
 
@@ -96,5 +104,3 @@ No fim, a solução foi mais simples do que parecia no começo. Em vez de tentar
 Para a escolha das músicas, montamos um menu no display LCD controlado pelos botões, que deixou o uso bem intuitivo. Os LEDs verde e vermelho acabaram ajudando bastante, porque mostram na hora o que está acontecendo. Simular tudo no Tinkercad antes também fez diferença, porque a montagem física já começou com as ligações certas.
 
 O projeto foi uma boa forma de colocar em prática o que vimos na disciplina: programar o microcontrolador, ler botões e usar um display. Se fôssemos continuar, uma ideia seria usar um módulo de MP3 (como o DFPlayer) para tocar o áudio original das músicas, ou colocar um controle de volume.
-
-
