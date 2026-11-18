@@ -1,6 +1,6 @@
 # Reprodutor de Músicas com Arduino
 
-Projeto da disciplina **CCP020 - Digital Experience Ultimate**, do Centro Universitário FEI, com o professor Isaac.
+Projeto da disciplina **CCP020 - Digital Experience Ultimate**, do Centro Universitário FEI, com o professor André Perin.
 
 **Grupo:**
 - Samuel - RA 52.126.003-4
